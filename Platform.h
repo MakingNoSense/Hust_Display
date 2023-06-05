@@ -31,13 +31,13 @@
 //#define RTP_35
 //#define CTP_35
 
-//#define NTP_43
+#define NTP_43
 //#define RTP_43
 //#define CTP_43
 
 //#define NTP_50
 //#define RTP_50
-#define CTP_50
+//#define CTP_50
 
 //#define NTP_70
 //#define RTP_70

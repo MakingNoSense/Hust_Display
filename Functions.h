@@ -25,3 +25,4 @@ void cruise_control_icon(Gpu_Hal_Context_t *phost, float cruise_velocity);
 double extractDataMPPT(String data, int startByte, int numBytes);
 double extractSingleByte(String data, int startByte);
 double extractBytesToDecimal(String data, int startByte, int numBytes);
+void eco_or_racing_mode(Gpu_Hal_Context_t *phost, bool eco_or_racing_mode_flag); 

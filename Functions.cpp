@@ -28,10 +28,10 @@ void Write_Text(Gpu_Hal_Context_t *phost, int x, int y, int size, char text[])
 
     if(isUpperCase(text[i])){
       x += size;
-    } else if(text[i] == 'r' || text[i] == 'i') {
+    } else if(text[i] == 'r' || text[i] == 'i' || text[i] == 'e') {
       x += size - size/3*1.5;
     } else  if(text[i] == 'm') {
-      x += size + 5;
+      x += size + 1;
     } else { 
       x += size - increment;
     }
@@ -103,66 +103,6 @@ void insert_scissor(Gpu_Hal_Context_t *phost, int x1, int x2, int y1, int y2, in
   App_WrDl_Buffer(phost, COLOR_RGB(r, g, b));
   App_WrDl_Buffer(phost, SCISSOR_XY(x1, y1));
   App_WrDl_Buffer(phost, SCISSOR_SIZE(x2, y2));
-}
-
-
-/* Logic for the charging on the screen */
-void insert_charging(Gpu_Hal_Context_t *phost, float charging) {
-
-  App_WrDl_Buffer(phost, BEGIN(POINTS));
-  App_WrDl_Buffer(phost, POINT_SIZE(150));
-
-  if(charging > 0.9) {
-    App_WrDl_Buffer(phost, COLOR_RGB(1, 250, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 25, 0, 0));
-  }
-
-  if(charging > 0.8){
-    App_WrDl_Buffer(phost, COLOR_RGB(10, 200, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 50, 0, 0));
-  }
-  
-  if(charging > 0.7){
-    App_WrDl_Buffer(phost, COLOR_RGB(20, 150, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 75, 0, 0));
-  }
-  
-  if(charging > 0.6){  
-    App_WrDl_Buffer(phost, COLOR_RGB(70, 150, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 100, 0, 0));
-  }
-
-  if(charging > 0.5) {
-    App_WrDl_Buffer(phost, COLOR_RGB(150, 180, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 125, 0, 0));
-  }
-
-  if(charging > 0.4) {
-    App_WrDl_Buffer(phost, COLOR_RGB(180, 150, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 150, 0, 0));
-  }
-
-  if(charging > 0.3) {
-    App_WrDl_Buffer(phost, COLOR_RGB(200, 100, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 175, 0, 0));
-  }
-
-  if(charging > 0.2){
-    App_WrDl_Buffer(phost, COLOR_RGB(200, 50, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 200, 0, 0));
-  }
-
-  if(charging > 0.1)  {
-    App_WrDl_Buffer(phost, COLOR_RGB(240, 50, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 225, 0, 0));
-  }
-
-  if(charging > 0.5){
-    App_WrDl_Buffer(phost, COLOR_RGB(255, 1, 1));
-    App_WrDl_Buffer(phost, VERTEX2II(455, 250, 0, 0));
-  }
-  
-  App_WrDl_Buffer(phost, END());
 }
 
 
@@ -265,9 +205,14 @@ void economy_icon(Gpu_Hal_Context_t *phost, int meter_status) {
   draw_rect(phost, 232, 13, 248, 56, 255, 255, 1);
   draw_rect(phost, 261, 13, 276, 56, 200, 230, 1);
   draw_rect(phost, 289, 13, 303, 56, 100, 255, 1);
-  insert_single_line(phost, 240, 240, 10, 60, 40, 10, 50 ,10);
+
+  /* 
+    Interval: 177-280
+  */
+
+  insert_single_line(phost, meter_status, meter_status, 10, 60, 40, 10, 50 ,10);
+
   insert_line(phost, 170, 310, 8, 60, 40);
-  //insert_scissor(phost, 172, 10, 308, 58, 200, 1, 1);
 }
 
 
@@ -300,8 +245,18 @@ void cruise_control_icon(Gpu_Hal_Context_t *phost, float cruise_velocity) {
 }
 
 
+void eco_or_racing_mode(Gpu_Hal_Context_t *phost, bool eco_or_racing_mode_flag) {
+  if(!eco_or_racing_mode_flag) {
+    Write_Text(phost, 85, 90, 23, "ECO");
+  } else {
+    Write_Text(phost, 85, 90, 23, "RACE");
+  }
+}
+
+
 int calc_potentials(float potential, float min, float max) {
-  int mappedValue = map(potential, 0, 1023, min, max);
+  //int mappedValue = map(potential, 0, 1023, min, max);
+  int mappedValue = map(potential, min, max, 0, 1023);
   //Serial.println(mappedValue/6);
   return int(mappedValue/5);
 }
